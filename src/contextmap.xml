@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="co1" extends="struts-default">
+		<action name="context1" class="cn.wyc.Contextmap.context1">
+			<result name="success">/context1.jsp</result>
+		</action>
+		<action name="context2" class="cn.wyc.Contextmap.context2">
+			<result name="success">/context2.jsp</result>
+		</action>
+		<action name="context3" class="cn.wyc.Contextmap.context3">
+			<result name="success">/context3.jsp</result>
+		</action>
+		<action name="context4" class="cn.wyc.Contextmap.UseIterator" method="findAll">
+			<result name="success">/context4.jsp</result>
+		</action>
+		<action name="context6" class="cn.wyc.Contextmap.context6">
+			<result name="success">/context6.jsp</result>
+		</action>
+		<action name="save" class="cn.wyc.Contextmap.context6" method="save">
+		</action>
+		<action name="context7" class="cn.wyc.Contextmap.context7" method="context7">
+		</action>
+	</package>
+</struts>

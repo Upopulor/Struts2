@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.ui.theme" value="simple"></constant><!-- 改主题 -->
+	
+	 <!-- 自定义拦截器的配置 -->
+	<package name="fin4" extends="struts-default" abstract="true">
+	<interceptors>
+		<interceptor name="checkloginInterceptor" class="cn.wyc.finalProject.checkloginInterceptor"></interceptor>
+		<interceptor-stack name="myDefaultStack">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<interceptor-ref name="checkloginInterceptor"></interceptor-ref>
+		</interceptor-stack>
+	</interceptors>
+	<!-- 重置默认拦截器栈 -->
+	<default-interceptor-ref name="myDefaultStack"></default-interceptor-ref>
+	<!-- 全局结果视图 -->
+	<global-results>
+		<result name="login">/login/login.jsp</result>
+	</global-results>
+	</package>
+	
+	<package name="fin1" extends="struts-default">
+		<action name="login" class="cn.wyc.finalProject.UserActionU" method="saylogin">
+			<result type="redirect">/login/home.jsp</result>
+			<result name="input">/login/login.jsp</result>
+		</action>
+	</package>
+	<package name="fin2" extends="myDefaultStack" namespace="/user">
+		<action name="add" class="cn.wyc.finalProject.UserActionU" method="sayadd">
+			<!-- 配置上传文件的拓展名 -->
+			<interceptor-ref name="defaultStack">
+				<param name="fileUpload.allowedExtensions">.doc,.docx</param>
+			</interceptor-ref>
+			<result>/user/list.jsp</result>
+			<result name="input">/user/add.jsp</result>
+		</action>
+		<!-- 查询所有用户 -->
+		<action name="findAllU" class="cn.wyc.finalProject.UserActionU" method="sayfindAll">
+			<result>/user/list.jsp</result>
+		</action>
+		<!-- 查看用户详细信息 -->
+		<action name="findById" class="cn.wyc.finalProject.UserActionU" method="sayfindById">
+			<result>/user/view.jsp</result>
+		</action>
+		<!-- 下载 -->
+		<action name="download" class="cn.wyc.finalProject.UserActionU" method="saydownload">
+			<result type="stream">
+				<!-- 给stream的结果注入参数 1流的信息 2告诉浏览器以下载的方式打开 3告诉浏览器响应正文的MIME类型 -->
+				<param name="inputName">input</param>                      <!-- 静态方法调用 -->
+				<param name="contentDisposition">attachment;filename=${@java.net.URLEncoder@encode(oldFileName,"UTF-8")}</param>
+				<param name="contentType">application/octet-stream</param>
+			</result>
+		</action>
+		<!-- 删除 -->
+		<action name="delete" class="cn.wyc.finalProject.UserActionU" method="saydelete">
+			<!-- 删除成功后重新获取用户列表 使用重定向的一个动作-->
+			<result type="redirectAction">findAllU</result>
+		</action>
+		<!-- 显示编辑用户页面 -->
+		<action name="editUI" class="cn.wyc.finalProject.UserActionU" method="sayeditUI">
+			<!-- 配置结果视图 -->
+			<result>/user/edit.jsp</result>
+		</action>
+		<!-- 编辑用户 -->
+		<action name="edit" class="cn.wyc.finalProject.UserActionU" method="sayedit">
+			<!-- 配置结果视图 -->
+			<result type="redirectAction">findAllU</result>
+			<result name="input">/user/edit.jsp</result>
+		</action>
+		<!-- 多添加查询 -->
+		<action name="findUserByCondition" class="cn.wyc.finalProject.UserActionU" method="sayfindUserByCondition">
+			<!-- 配置结果视图 -->
+			<result>/user/list.jsp</result>
+		</action>
+	</package>
+</struts>

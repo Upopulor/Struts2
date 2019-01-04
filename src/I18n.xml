@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 配置Struts2的默认消息资源包 -->
+	<constant name="struts.custom.i18n.resources" value="cn.resource.message"></constant>
+	<package name="i18" extends="struts-default">
+		<action name="I18nDemo1" class="cn.wyc.i18n.I18nAction">
+			<result>/I18nSuccess.jsp</result>
+		</action>
+	</package>
+</struts>

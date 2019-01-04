@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 小的可以，大的文件传不了, 因为使用的是Struts2的默认上传限制2MB -->
+	<!-- 修改 1 在default.properties中配的struts.multipart.maxSize=2097152 -->
+	<constant name="struts.multipart.maxSize" value="5242880"></constant> 
+	<!-- 配置全局消息资源包 -->
+	<constant name="struts.custom.i18n.resources" value="cn.wyc.upload.fileupload_message"></constant>
+	<package name="up1" extends="struts-default">
+		<action name="upload" class="cn.wyc.upload.upload1" method="sayUpload">
+			<!-- 无法使用 修改 2通过给fileUpload的拦截器注入参数的形式，控制上传文件大小 
+			<interceptor-ref name="defaultStack">
+				<param name="fileUpload.maximumSize">5242880</param>
+			</interceptor-ref>  -->
+			<interceptor-ref name="defaultStack">
+				<!-- 限制上传文件的拓展名，如果有多个，使用逗号分隔 -->
+				<param name="fileUpload.allowedExtensions">jpg,png,bmp</param>
+				<!-- 限制上传文件的MIME类型，如果有多个，使用逗号分隔 -->
+				<param name="fileUpload.allowedTypes">image/jpg,image/pjpeg,image/png</param>
+			</interceptor-ref>
+			<result></result>
+		</action>
+		
+		<action name="upload2" class="cn.wyc.upload.upload2" method="sayUpload">
+			<result></result>
+		</action>
+		
+		<action name="download" class="cn.wyc.upload.download" method="sayDownload">
+			<result name="success" type="stream">
+			    <!-- 给stream的结果类型注入参数：ContentType -->
+				<param name="contentType">application/octet-stream</param>
+			    <!-- 告诉客户浏览器以下载的方式打开 -->
+			    <param name="contentDisposition">attachment;filename=${@java.net.URLEncoder@encode(filename,"UTF-8")}</param>
+				<!-- 注入字节输入流 取值要写动作类中的set属性名称-->
+				<param name="inputName">abc</param>
+			</result>
+		</action>
+		
+	</package>
+</struts>
+	

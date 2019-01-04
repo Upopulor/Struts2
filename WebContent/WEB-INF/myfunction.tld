@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+    <description>A tag library exercising SimpleTag handlers.</description>
+    <!-- 指定标签库的版本号 -->
+    <tlib-version>1.0</tlib-version>
+    <!-- 使用的短名称，对应taglib指令中的prefix -->
+    <short-name>myfn</short-name>
+    <!-- 把当前的方法库绑定到一个uri地址上，在该地址上不一定存在此方法库 -->
+    <uri>http://tomcat.apache.org/myfunction</uri>
+    <!-- 自定义方法 -->
+    <function>
+        <description>Cg</description>
+        <!-- 方法名称，是jsp页面上使用的名称 -->
+        <name>toUpperCase</name>
+        <!-- 指定执行的类 -->
+        <function-class>cn.wyc.ognl.MyFunction</function-class>
+        <!-- 指定执行的方法
+        	注意：当方法有参数和返回值时，参数和返回值必须写类全名
+         -->
+        <function-signature>java.lang.String toUpperCase(java.lang.String)</function-signature>
+    </function>
+    
+</taglib>    

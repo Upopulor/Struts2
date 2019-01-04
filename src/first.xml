@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="p1" extends="struts-default">
+		<action name="hello" class="cn.wyc.strutsfirst.struts1" method="sayhello">
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	</package>
+	<!-- 修改默认动作类，一般不改 -->
+	<!--  <default-class-ref class="自己的类"></default-class-ref> -->
+	
+	<!-- 1 learn package -->
+	<!-- package元素：是定义一个Struts的包，它把配置文件按照面向对象的思想来管理 
+		 name属性：指定包的名称，注意：包的名称在配置文件中为唯一
+		 extends属性：指定当前包的父包，按照面向对象的思想管理的体现
+		 abstract属性：把包声明为一个抽象包，此包就是用来被继承的。只有没有action元素的包才可以
+		 namespace属性：名称空间，当指定了名称空间后，访问路径就变成了：名称空间+动作名称
+		 					     当不指定名称空间时，该属性有默认值 是："" ,注意不是"/"
+		 			   名称空间的搜索顺序：
+		 			   		  1 先去对应的名称空间
+		 			   		  		在指定的名称空间下找到了，执行第二部
+		 			   		  		在指定的名称空间下没找到，按照名称结构向上找，一直到名称空间根空间，
+		 			   		 只要在任何一级找到了，就执行第二部
+		 			   		  2 找动作名称
+		 			   		                    先在指定的名称空间下，搜索对应的动作名称，找到了就执行动作类的动作方法
+		 			   		  		在指定的名称空间下没找到对应的动作名称，前往默认的名称空间找动作名称，然后执行。
+	-->
+	<package name="p2" extends="struts-default" namespace="/user">
+		<action name="action1" class="cn.wyc.strutsfirst.actionDemo1" method="sayAction">
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	</package>
+	<!-- 2 learn action 创建动作类的第一种方法-->
+	<!-- Action元素：是用于定义动作名称，动作类和动作方法的映射。以及当出现不同情况时前往直接结果视图 
+		 name属性：动作的名称。和jsp页面上的请求URL中的名称对应起来。注意此处不能写.action
+		 class属性：动作类的名称
+		 method属性:指定要执行的动作类fangf
+	-->
+	<package name="p3" extends="struts-default">
+		<action name="action2" class="cn.wyc.strutsfirst.actionDemo2" method="sayAction2">
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	</package>
+	<!-- 3 learn action 创建动作类的第二种方法-->
+	<package name="p4" extends="struts-default">
+		<action name="action3" class="cn.wyc.strutsfirst.actionDemo3" method="sayAction2">
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	<!-- 4 learn action 创建动作类的第三种方法-->
+		<action name="action4" class="cn.wyc.strutsfirst.actionDemo4" >
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	<!-- 5 访问默认的动作类和动作方法的配置
+		 默认的动作类是：ActionSupport的类。它是在Struts-default.xml的配置文件中定义的
+	-->
+		<action name="defaultAction" >
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	<!-- 6 使用通配符，配置动作方法
+		*表示的是动作的名称，当有和动作名称相匹配的时候可以用{出现的位置}来代替
+	 -->
+	<!--  <action name="*" class="cn.wyc.strutsfirst.actionDemo4" method="{1}">
+			<result name="success">/{1}.jsp</result>
+		</action> -->
+	<action name="*_*" class="cn.wyc.strutsfirst.{2}Action" method="{1}{2}">
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	<!-- 7 动态方法调用的配置 -->
+	<action name="user" class="cn.wyc.strutsfirst.UserAction" method="sayAction2">
+			<result name="success">/hellosuccess.jsp</result>
+	</action>	
+	
+	<!--8 Result元素：配置逻辑结果图
+		  name属性：结果视图名称。与动作方法的返回值相对应，一致时前往指定的jsp
+		  type属性：结果视图类型。不写的时候，有默认值，是dispatcher转发
+		  		可取值：1 dispatcher  请求转发 默认
+		  			  2 redirect	     重定向
+		  			  3 chain       转发到另一个动作（分为转发到同包下另一动作和转发到不同包）
+		  			  4 redirectAction 重定向到另一动作（分为转发到同包下另一动作和转发到不同包）
+	 -->
+	<action name="result" class="cn.wyc.strutsfirst.Result1">
+			<result name="success">/hellosuccess2.jsp</result>
+	</action>	
+	
+	<!-- 3 chain       转发到另一个动作（分为转发到同包下另一动作和转发到不同包）     
+	     4 redirectAction 重定向到另一动作（分为转发到同包下另一动作和转发到不同包） -->
+	
+	<action name="result2" class="cn.wyc.strutsfirst.Result2">
+			<result name="success" type="redirectAction">result</result>
+	</action>
+	</package>
+	<!-- 不同包下的测试 -->
+	<package name="q1" extends="struts-default" namespace="/q1">
+		<action name="result3" class="cn.wyc.strutsfirst.Result3">
+			<result name="success" type="chain">
+				<param name="namespace">/q2</param>
+				<param name="actionName">result4</param>
+			</result>
+		</action>
+	</package>
+	<package name="q2" extends="struts-default" namespace="/q2">
+		<action name="result4" class="cn.wyc.strutsfirst.Result4">
+			<result name="success">/hellosuccess2.jsp</result>
+		</action>
+	</package>
+	
+	<!-- my OWn result -->
+	<package name="q3" extends="struts-default">
+	    <!-- 自定义结果类型
+	         在包中配置的结果视图，是只能当前包和其子包中使用 -->
+	    <result-types>
+	    	<result-type name="MyResult" class="cn.wyc.strutsfirst.MyResult"></result-type>
+	    </result-types>
+		<action name="Aaa" class="cn.wyc.strutsfirst.Aaa">
+			<!-- 不指定页面完成后停留在本页面 -->
+			<result name="success" type="MyResult">
+				<!-- 配置图像大小 param的是即时注入的，同理location也是可以通过parameter
+				即时注入的，就不用写死了-->
+				<param name="width">250</param>
+				<param name="height">40</param>
+			</result>
+			
+		</action>
+	</package>
+</struts>

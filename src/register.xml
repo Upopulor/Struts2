@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="re1" extends="struts-default">
+		<action name="register" class="cn.wyc.strutsRegist.register1" method="sayRegister1">
+			<result type="redirect">/hellosuccess.jsp</result>
+			<result name="exists">/StrutsRegisterExists.jsp</result>
+			<!-- 当出现问题后，回到哪里 -->
+			<result name="input">/StrutsRegister3Valid.jsp</result>
+		</action>
+		<!-- 声明式验证器案例配置 -->
+		<action name="addStudent" class="cn.wyc.registerModel.StuAction" method="addStudent">
+			<result name="input">/student.jsp</result>
+		</action>
+	</package>
+</struts>

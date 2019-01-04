@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="lan1" extends="struts-default">
+		<!-- 声明自定义拦截器 -->
+    	<interceptors>
+    		<interceptor name="MyLanjieInterceptor" class="cn.wyc.lanjie.MyLanjieInterceptor">
+    		</interceptor>
+    		<interceptor name="MyLanjieInterceptor2" class="cn.wyc.lanjie.MyLanjieInterceptor2">
+    		</interceptor>
+    	</interceptors>
+		<action name="lanjie" class="cn.wyc.lanjie.mylanjie" method="saylanjie">
+			<!-- 使用自定义拦截器，当配置了任何一个拦截器，默认的拦截器栈就不会工作了 
+				当有多个拦截器时，是由引用配置决定执行的顺序
+			-->
+			<interceptor-ref name="MyLanjieInterceptor"></interceptor-ref>
+			<interceptor-ref name="MyLanjieInterceptor2"></interceptor-ref>
+			<result name="success">/hellosuccess.jsp</result>
+		</action>
+	</package>
+	
+	
+	
+	<!-- 
+		使用自定义拦截器：检查登录，登录成功以后访问才能访问主页和另一页面
+		存在的问题：
+			使用自定义的拦截器后，默认的拦截器就不起作用了
+			解决：把默认的拦截器栈配置进来<interceptor-ref name="defaultStack"></interceptor-ref>
+		还存在的问题：
+			当需要拦截的动作很多时，写起来很繁琐
+			解决：使用组<interceptor-stack name="myDefaultStack">包含默认的栈和自己的，然后直接使用
+		还存在的问题：
+			下面每次使用时还是要写，很繁琐
+			解决：使用覆盖Struts-Default.xml配置文字中的拦截器栈，让我们自己写的成为默认的
+			<default-interceptor-ref name="myDefaultStack"></default-interceptor-ref>
+		又出现的问题：
+			所以页面都需要验证，自然链login也登录不了
+			解决：在ABstractInterceptor的子类中，还有一个抽象类MethodFilterInterceptor
+			它里面提供俩属性 excludeMethods:哪些方向不需要拦截；includeMethods:哪些方向需要拦截
+			<interceptor-ref name="CheckLoginInterceptor2">
+				<param name="excludeMethods">login</param>
+			</interceptor-ref>
+			当然这时需要写新的拦截器继承MethodFilterInterceptor并把原来的intercept写成DoIntercept,内容一样
+		还存在的问题：
+			在声明拦截器和定义拦截器栈的可能就不知道哪些方法需要拦截哪些不需要，不可能先写方法名字
+			解决：在使用拦截器时，注入参数，告诉拦截器哪些需要拦截，哪些不要
+	 -->
+	<package name="lan2" extends="struts-default">
+	<interceptors><!-- 声明拦截器 -->
+    		<interceptor name="CheckLoginInterceptor2" class="cn.wyc.lanjie.CheckLoginInterceptor2"></interceptor>
+    		<interceptor-stack name="myDefaultStack">
+    			<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="CheckLoginInterceptor2"></interceptor-ref>
+    		</interceptor-stack>
+    	</interceptors>
+    	<default-interceptor-ref name="myDefaultStack"></default-interceptor-ref>
+    	<global-results><!-- 全局结果视图 -->
+    		<result name="input">/lanjielogin.jsp</result><!-- 数据回显结果视图 -->
+    	</global-results>
+    	<!-- 用户登录时，不需要检查拦截器工作 -->
+    	<action name="login" class="cn.wyc.lanjie.mylanjie2" method="login">
+    		<interceptor-ref name="myDefaultStack">
+    			<param name="CheckLoginInterceptor2.excludeMethods">login</param>
+    		</interceptor-ref>
+    	    <!-- 登录成功后跳转到主页，要用type="redirectAction"否则跳不过去 -->
+			<result type="redirectAction">/showMain</result>
+		</action>
+		<!-- 前往主页的动作名称，需要检查登录的拦截器工作 -->
+		<action name="showMain" class="cn.wyc.lanjie.mylanjie2">
+			<result name="success">/lanjieMain.jsp</result>
+		</action>
+		<!-- 前往另一页面的动作名称，需要检查登录的拦截器工作 -->
+		<action name="showOther" class="cn.wyc.lanjie.mylanjie2">
+			<result name="success">/lanjieOther.jsp</result>
+		</action>
+	</package>
+</struts>
